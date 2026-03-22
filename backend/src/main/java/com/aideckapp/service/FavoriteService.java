@@ -28,7 +28,6 @@ public class FavoriteService {
     public List<ToolDTO> getFavorites(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
-
         return user.getFavorites().stream()
                 .map(toolService::toDTO)
                 .collect(Collectors.toList());
@@ -39,7 +38,6 @@ public class FavoriteService {
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
         Tool tool = toolRepository.findById(toolId)
                 .orElseThrow(() -> new RuntimeException("Tool not found: " + toolId));
-
         user.getFavorites().add(tool);
         userRepository.save(user);
     }
@@ -49,7 +47,6 @@ public class FavoriteService {
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
         Tool tool = toolRepository.findById(toolId)
                 .orElseThrow(() -> new RuntimeException("Tool not found: " + toolId));
-
         user.getFavorites().remove(tool);
         userRepository.save(user);
     }
