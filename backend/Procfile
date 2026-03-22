@@ -1,0 +1,1 @@
+web: java -jar target/ai-deck-backend-0.0.1-SNAPSHOT.jar
