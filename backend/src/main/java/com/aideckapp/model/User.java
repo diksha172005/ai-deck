@@ -31,11 +31,10 @@ public class User {
     @Column(nullable = false)
     private String role = "USER";
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "favorites",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "tool_id")
+    name = "favorites",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "tool_id")
     )
-    private Set<Tool> favorites = new HashSet<>();
-}
+private Set<Tool> favorites = new HashSet<>();
