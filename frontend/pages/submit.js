@@ -29,6 +29,33 @@ export default function SubmitPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Validate URL starts with https://
+    if (!form.link.startsWith('https://')) {
+      setError('URL must start with https://');
+      return;
+    }
+
+    // Validate it's a real URL format
+    try {
+      new URL(form.link);
+    }
+    catch {
+      setError('Please enter a valid URL');
+      return;
+    }
+
+    // Minimum description length
+    if (form.description.length < 20) {
+      setError('Description must be at least 20 characters');
+      return;
+    }
+
+    // Name validation
+    if (form.name.length < 3) {
+      setError('Tool name must be at least 3 characters');
+      return;
+    }
     setLoading(true);
 
     if (!form.categoryId) {
