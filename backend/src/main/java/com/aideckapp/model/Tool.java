@@ -30,10 +30,22 @@ public class Tool {
     @Column
     private String logoUrl;
 
+   import jakarta.persistence.FetchType;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "tool_tags", joinColumns = @JoinColumn(name = "tool_id"))
     @Column(name = "tag")
     private List<String> tags;
+    ```
+
+    ---
+
+## See the Full Build Error
+
+Railway → **Deployments** → failed deployment → **View Logs** → scroll to find:
+```
+[ERROR] COMPILATION ERROR
+[ERROR] .../ToolService.java:[line] error message
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
