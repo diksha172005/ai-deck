@@ -34,7 +34,7 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
     name = "favorites",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "tool_id")
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "tool_id")
     )
 private Set<Tool> favorites = new HashSet<>();
