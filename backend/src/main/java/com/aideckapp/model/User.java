@@ -37,4 +37,5 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "tool_id")
     )
-private Set<Tool> favorites = new HashSet<>();
+    private Set<Tool> favorites = new HashSet<>();
+}
