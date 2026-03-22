@@ -16,22 +16,28 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
+ const login = async (email, password) => {
     const data = await apiLogin({ email, password });
-    Cookies.set('token', data.token, { expires: 7 });
-    Cookies.set('user', JSON.stringify({ id: data.userId, email: data.email, name: data.name }), { expires: 7 });
+    Cookies.set('token', data.token, { expires: 7, sameSite: 'None', secure: true });
+    Cookies.set('user', JSON.stringify({ 
+        id: data.userId, 
+        email: data.email, 
+        name: data.name 
+    }), { expires: 7, sameSite: 'None', secure: true });
     setUser({ id: data.userId, email: data.email, name: data.name });
     return data;
-  };
-
-  const signup = async (name, email, password) => {
+};
+ const signup = async (name, email, password) => {
     const data = await apiSignup({ name, email, password });
-    Cookies.set('token', data.token, { expires: 7 });
-    Cookies.set('user', JSON.stringify({ id: data.userId, email: data.email, name: data.name }), { expires: 7 });
+    Cookies.set('token', data.token, { expires: 7, sameSite: 'None', secure: true });
+    Cookies.set('user', JSON.stringify({ 
+        id: data.userId, 
+        email: data.email, 
+        name: data.name 
+    }), { expires: 7, sameSite: 'None', secure: true });
     setUser({ id: data.userId, email: data.email, name: data.name });
     return data;
-  };
-
+};
   const logout = () => {
     Cookies.remove('token');
     Cookies.remove('user');
