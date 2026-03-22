@@ -30,7 +30,7 @@ public class Tool {
     @Column
     private String logoUrl;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "tool_tags", joinColumns = @JoinColumn(name = "tool_id"))
     @Column(name = "tag")
     private List<String> tags;
