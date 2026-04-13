@@ -15,18 +15,19 @@ export default function LoginPage() {
   const handleChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-    try {
-      await login(form.email, form.password);
-      router.push('/');
-    } catch (err) {
-      setError(err?.response?.data?.error || 'Invalid email or password.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  e.preventDefault();
+  setError('');
+  setLoading(true);
+  try {
+    await login(form.email, form.password);
+    router.push('/');
+  } catch (err) {
+    const msg = err?.response?.data?.error || 'Invalid email or password.';
+    setError(msg);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>
