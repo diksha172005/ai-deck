@@ -87,6 +87,14 @@ export default function LoginPage() {
               >
                 {loading ? 'Signing in…' : 'Sign in'}
               </button>
+
+                // Add this below the submit button inside the form card
+                <div className="text-right mt-1">
+                  <Link href="/auth/forgot-password" className="text-xs text-white/35 hover:text-brand-400 font-body transition-colors">
+                    Forgot password?
+                  </Link>
+                </div>
+                
             </form>
           </div>
 
