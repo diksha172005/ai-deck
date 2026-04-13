@@ -55,6 +55,19 @@ export default function LoginPage() {
                 </div>
               )}
 
+              {error && error.includes('verify') && (
+                <p className="text-xs text-white/40 font-body text-center">
+                   Didn't get the email?{' '}
+                  <button
+                    type="button"
+                    onClick={() => router.push('/auth/signup')}
+                    className="text-brand-400 hover:text-brand-300"
+                  >
+                    Sign up again
+                  </button>
+                 </p>
+              )}
+
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-body text-white/50 uppercase tracking-wider">Email</label>
                 <input
