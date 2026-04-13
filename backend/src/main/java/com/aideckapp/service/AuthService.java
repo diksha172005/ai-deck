@@ -34,27 +34,32 @@ public class AuthService {
     private EmailService emailService;
 
     public String signup(SignupRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already registered.");
-        }
-
-        String verificationToken = UUID.randomUUID().toString();
-
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setRole("USER");
-        user.setEmailVerified(false);
-        user.setVerificationToken(verificationToken);
-
-        userRepository.save(user);
-
-        // Send verification email
-        emailService.sendVerificationEmail(request.getEmail(), verificationToken);
-
-        return "Registration successful! Please check your email to verify your account.";
+    if (userRepository.existsByEmail(request.getEmail())) {
+        throw new RuntimeException("Email already registered.");
     }
+
+    String verificationToken = UUID.randomUUID().toString();
+
+    User user = new User();
+    user.setName(request.getName());
+    user.setEmail(request.getEmail());
+    user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+    user.setRole("USER");
+    user.setEmailVerified(false);
+    user.setVerificationToken(verificationToken);
+
+    userRepository.save(user);
+
+    // Send email in background — don't crash signup if email fails
+    try {
+        emailService.sendVerificationEmail(request.getEmail(), verificationToken);
+    } catch (Exception e) {
+        System.err.println("Email sending failed: " + e.getMessage());
+        // Signup still succeeds even if email fails
+    }
+
+    return "Registration successful! Please check your email to verify your account.";
+}
 
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
