@@ -12,11 +12,14 @@ import java.net.http.HttpResponse;
 @Service
 public class EmailService {
 
-    @Value("${app.resend.api-key}")
+    @Value("${app.brevo.api-key}")
     private String apiKey;
 
-    @Value("${app.resend.from-email}")
+    @Value("${app.brevo.from-email}")
     private String fromEmail;
+
+    @Value("${app.brevo.from-name}")
+    private String fromName;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -27,17 +30,17 @@ public class EmailService {
             String link = baseUrl + "/auth/verify?token=" + token;
             String body = String.format("""
                 {
-                  "from": "%s",
-                  "to": ["%s"],
+                  "sender": {"name": "%s", "email": "%s"},
+                  "to": [{"email": "%s"}],
                   "subject": "Verify your AI-Deck account",
-                  "text": "Welcome to AI-Deck!\\n\\nVerify your email here:\\n\\n%s\\n\\nExpires in 24 hours.\\n\\n— AI-Deck Team"
+                  "textContent": "Welcome to AI-Deck!\\n\\nPlease verify your email by clicking the link below:\\n\\n%s\\n\\nThis link expires in 24 hours.\\n\\nIf you did not create an account, ignore this email.\\n\\n— AI-Deck Team"
                 }
-                """, fromEmail, toEmail, link);
+                """, fromName, fromEmail, toEmail, link);
 
-            sendEmail(body);
-            System.out.println("✅ Verification email sent to: " + toEmail);
+            String response = sendEmail(body);
+            System.out.println("✅ Verification email sent to: " + toEmail + " | Response: " + response);
         } catch (Exception e) {
-            System.err.println("❌ Email failed: " + e.getMessage());
+            System.err.println("❌ Verification email failed: " + e.getMessage());
         }
     }
 
@@ -47,33 +50,35 @@ public class EmailService {
             String link = baseUrl + "/auth/reset-password?token=" + token;
             String body = String.format("""
                 {
-                  "from": "%s",
-                  "to": ["%s"],
+                  "sender": {"name": "%s", "email": "%s"},
+                  "to": [{"email": "%s"}],
                   "subject": "Reset your AI-Deck password",
-                  "text": "Reset your password here:\\n\\n%s\\n\\nExpires in 15 minutes.\\n\\n— AI-Deck Team"
+                  "textContent": "Hi!\\n\\nWe received a request to reset your AI-Deck password.\\n\\nClick the link below to set a new password:\\n\\n%s\\n\\nThis link expires in 15 minutes.\\n\\nIf you did not request this, ignore this email.\\n\\n— AI-Deck Team"
                 }
-                """, fromEmail, toEmail, link);
+                """, fromName, fromEmail, toEmail, link);
 
-            sendEmail(body);
-            System.out.println("✅ Reset email sent to: " + toEmail);
+            String response = sendEmail(body);
+            System.out.println("✅ Reset email sent to: " + toEmail + " | Response: " + response);
         } catch (Exception e) {
             System.err.println("❌ Reset email failed: " + e.getMessage());
         }
     }
 
-    private void sendEmail(String jsonBody) throws Exception {
+    private String sendEmail(String jsonBody) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("https://api.resend.com/emails"))
-            .header("Authorization", "Bearer " + apiKey)
+            .uri(URI.create("https://api.brevo.com/v3/smtp/email"))
+            .header("api-key", apiKey)
             .header("Content-Type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
             .build();
 
-        HttpResponse<String> response = client.send(request,
-            HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(
+            request, HttpResponse.BodyHandlers.ofString());
 
-        System.out.println("📧 Resend response: " + response.statusCode()
+        System.out.println("📧 Brevo response: " + response.statusCode()
             + " " + response.body());
+
+        return response.statusCode() + " " + response.body();
     }
 }
